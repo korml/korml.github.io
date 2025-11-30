@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: unicode_scalars_3
+text: "東京"
+sequence:
+  - "東京_1"
+  - "東京_2"
+...

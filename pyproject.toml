@@ -1,0 +1,35 @@
+# ------------------------------------------------------------------------------
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2025 Jayesh Badwaik <j.badwaik@fz-juelich.de>
+# ------------------------------------------------------------------------------
+
+[project]
+name = "korml"
+version = "0.0.1"
+description = 'A Spec for Korml'
+readme = "readme.md"
+license = "Apache-2.0"
+authors = [
+{ name = "Jayesh Badwaik", email = "j.badwaik@fz-juelich.de" },
+]
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "mkdocs-awesome-nav",
+  "mkdocs-add-number-plugin",
+  "gitpython",
+  "pyyaml",
+  "pymdown-extensions",
+  "mkdocs-gen-files",
+  "mkdocs-awesome-pages-plugin",
+  "mkdocs-macros-plugin",
+  "mkdocs-pagetree-plugin",
+  "mkdocs-git-authors-plugin",
+  "mkdocs-git-revision-date-localized-plugin"
+]
+skip-install = true
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build"

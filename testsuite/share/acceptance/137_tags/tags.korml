@@ -1,0 +1,9 @@
+%!korml 1.0
+---
+test_id: tags_7
+timestamp: !timestamp "2024-01-07T12:34:56Z"
+custom_int: !int "60"
+sequence_of_tagged:
+  - !str "value_6_1"
+  - !str "value_6_2"
+...

@@ -1,0 +1,5 @@
+%!korml 1.0
+---
+test_id: flow_mappings_8
+mapping: {a_7: 1, b_7: 2, c_7: [x_7, y_7]}
+...

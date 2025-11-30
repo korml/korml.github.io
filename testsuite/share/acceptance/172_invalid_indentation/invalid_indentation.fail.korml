@@ -1,0 +1,7 @@
+%!korml 1.0
+---
+test_id: invalid_indentation_2
+bad_indent:
+   - too_many_spaces_1
+    - mixed_indent_1
+...

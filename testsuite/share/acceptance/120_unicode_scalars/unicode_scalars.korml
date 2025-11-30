@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: unicode_scalars_10
+text: "👍"
+sequence:
+  - "👍_1"
+  - "👍_2"
+...

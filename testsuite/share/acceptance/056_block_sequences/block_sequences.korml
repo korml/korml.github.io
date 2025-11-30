@@ -1,0 +1,11 @@
+%!korml 1.0
+---
+test_id: block_sequences_6
+items:
+  - one_5
+  - two_5
+  - three_5
+nested:
+  - - a_5
+    - b_5
+...

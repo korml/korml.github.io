@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: invalid_multi_document_7
+---
+first: doc_6
+----
+second: bad_separator_6
+...

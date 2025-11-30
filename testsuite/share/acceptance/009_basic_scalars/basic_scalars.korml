@@ -1,0 +1,9 @@
+%!korml 1.0
+---
+test_id: basic_scalars_9
+plain: value_9
+int_value: 8
+bool_true: true
+bool_false: false
+null_value: null
+...

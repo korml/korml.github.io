@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: unicode_scalars_7
+text: "Москва"
+sequence:
+  - "Москва_1"
+  - "Москва_2"
+...

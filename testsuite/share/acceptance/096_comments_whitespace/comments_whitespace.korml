@@ -1,0 +1,11 @@
+%!korml 1.0
+---
+# leading comment set 5
+test_id: comments_whitespace_6  # inline comment
+key: value_5   # trailing spaces   
+  
+# blank line above
+indented:
+  # nested comment
+  child: 5
+...

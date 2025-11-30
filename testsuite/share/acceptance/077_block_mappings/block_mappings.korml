@@ -1,0 +1,9 @@
+%!korml 1.0
+---
+test_id: block_mappings_7
+key1_6: value1_6
+key2_6: value2_6
+nested:
+  child1: val_6
+  child2: 6
+...

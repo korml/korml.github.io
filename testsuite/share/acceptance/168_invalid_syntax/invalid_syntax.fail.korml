@@ -1,0 +1,5 @@
+%!korml 1.0
+---
+test_id: invalid_syntax_8
+unbalanced_brace: { key: value_7
+...

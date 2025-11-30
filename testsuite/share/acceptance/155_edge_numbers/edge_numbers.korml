@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: edge_numbers_5
+number: -987654321
+sequence:
+  - -987654321
+  - -987654321
+...

@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: unicode_scalars_8
+text: "हिन्दी"
+sequence:
+  - "हिन्दी_1"
+  - "हिन्दी_2"
+...

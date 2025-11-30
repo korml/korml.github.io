@@ -1,0 +1,12 @@
+%!korml 1.0
+---
+test_id: block_scalars_5
+literal_block: |
+  line one 4
+  line two 4
+  line three 4
+folded_block: >
+  this is a folded
+  block scalar number 4
+  with several lines
+...

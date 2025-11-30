@@ -1,0 +1,9 @@
+%!korml 1.0
+---
+test_id: tags_2
+timestamp: !timestamp "2024-01-02T12:34:56Z"
+custom_int: !int "10"
+sequence_of_tagged:
+  - !str "value_1_1"
+  - !str "value_1_2"
+...

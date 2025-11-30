@@ -1,0 +1,9 @@
+%!korml 1.0
+---
+test_id: tags_5
+timestamp: !timestamp "2024-01-05T12:34:56Z"
+custom_int: !int "40"
+sequence_of_tagged:
+  - !str "value_4_1"
+  - !str "value_4_2"
+...

@@ -1,0 +1,10 @@
+%!korml 1.0
+---
+test_id: nested_structures_1
+level1:
+  level2:
+    level3:
+      level4:
+        index: 0
+        values: [a_0, b_0, c_0]
+...

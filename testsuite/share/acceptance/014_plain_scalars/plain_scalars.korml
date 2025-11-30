@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: plain_scalars_4
+simple: hello world 3
+with_punctuation: "!?-_:;,@3"
+with_hash: value #3 not comment
+with_colon: key3: still plain text
+...

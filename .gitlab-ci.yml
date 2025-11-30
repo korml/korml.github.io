@@ -1,0 +1,82 @@
+# ------------------------------------------------------------------------------
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2025 Jayesh Badwaik <j.badwaik@fz-juelich.de>
+# ------------------------------------------------------------------------------
+quality.typecheck:
+  tags: ["docker"]
+  image: python:latest
+  before_script:
+    - python -m venv /root/venv
+    - source /root/venv/bin/activate
+    - pip install --upgrade pip
+    - pip install hatch
+    - hatch env create mypy
+  script:
+    - hatch env run --env mypy -- mypy .
+
+test:
+  tags: ["docker"]
+  image: python:latest
+  before_script:
+    - python -m venv /root/venv
+    - source /root/venv/bin/activate
+    - pip install --upgrade pip
+    - pip install hatch
+    - hatch env create test
+  script:
+    - hatch env run --env test --  pytest
+
+license.check:
+  tags: ["docker"]
+  stage: .post
+  dependencies: []
+  image:
+    name: fsfe/reuse
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - reuse lint
+
+
+docs:
+  tags: ["docker"]
+  image: python:3.11-slim
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
+  before_script:
+    # Python / Hatch for MkDocs
+    - pip install --upgrade pip
+    - pip install hatch
+    - python --version
+    - hatch --version
+    # Node.js for Log4Brains
+    - apt-get update
+    - apt-get install -y nodejs npm
+    - node --version
+    - npm --version
+  script:
+    # Build MkDocs (outputs to ./site)
+    - hatch --env doc run -- mkdocs build
+    # Build ADR site into ./site/adr with correct base path
+    - npx --yes log4brains build --out site/adr --basePath /pykosha/adr
+    # Publish for GitLab Pages
+    - mv site public
+
+
+publish:
+  stage: deploy
+  image: alpine:latest
+  pages: true
+  only:
+    - main
+  tags:
+    - docker
+  dependencies:
+    - docs
+  script:
+    - echo "Deploying to GitLab Pages..."
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week

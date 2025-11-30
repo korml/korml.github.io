@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: single_quoted_5
+single_simple: 'hello 4'
+single_with_quote: 'it''s fine 4'
+single_multiline: 'line1 4
+  line2 4'
+...

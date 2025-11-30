@@ -1,0 +1,13 @@
+%!korml 1.0
+---
+test_id: anchors_aliases_3
+default: &base
+  host: localhost
+  port: 8002
+dev:
+  <<: *base
+  env: dev_2
+prod:
+  <<: *base
+  env: prod_2
+...

@@ -1,0 +1,6 @@
+%!korml 1.0
+---
+test_id: flow_sequences_3
+simple: [a_2, b_2, c_2]
+mixed: [1, "two_2", {k: v_2}]
+...

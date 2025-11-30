@@ -1,0 +1,7 @@
+%!korml 1.0
+---
+test_id: double_quoted_9
+double_simple: "hello 8"
+double_escapes: "line1\nline2_8\tend"
+double_unicode: "snowman \u2603 variant 8"
+...

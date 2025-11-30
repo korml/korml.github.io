@@ -1,0 +1,5 @@
+%!korml 1.0
+---
+test_id: invalid_characters_5
+key	with_tab: value_4
+...

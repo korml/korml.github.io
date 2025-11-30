@@ -1,0 +1,8 @@
+%!korml 1.0
+---
+test_id: edge_numbers_4
+number: 123456789
+sequence:
+  - 123456789
+  - -3
+...
