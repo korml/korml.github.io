@@ -15,7 +15,7 @@
 
 Full layer names:
 
-- **KS**: Korml Source
+- **KS** :  Korml Source
 - **LTS**: Lexical Token Stream
 - **CST**: Concrete Syntax Tree
 - **AST**: Abstract Syntax Tree

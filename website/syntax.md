@@ -24,6 +24,60 @@ grammar, which appears in the final section of this specification.
 
 ## Overview
 
+A typical korml file looks like show below. One will notice that it is extremely similar to YAML in
+its overall structure with some minor differences. Please refer to the [Comparison of Korml and
+YAML](#comparison-of-korml-and-yaml) section for a quick overview of the differences.
+
+
+```yaml
+%!korml version 1.0 # optional line indicating version
+--- # optional document start marker, but mandatory for
+    # 1. multi-document files
+    # 2. when version directive is present
+
+# Simple key-value mapping
+key: value
+
+# Sequence  of items
+list:
+    - item1
+    - item2
+
+# Mapping
+object:
+    name: "Example"
+    count: 42
+
+# Folded block scalar
+# This becomes a single line equivalent to:
+# folded_block_scalar: "This is a folded block scalar that becomes a single line."
+folded_block_scalar: >
+    This is a folded
+    block scalar that
+    becomes a single line.
+
+# Literal block scalar
+literal_block: |
+    This is a literal
+    block scalar that
+    preserves line breaks.
+
+# Triple-quoted scalar
+# The content inside is taken literally, including newlines and indentation
+# and there are no escape sequences except for the delimiter itself.
+triple_quoted:
+    """
+    This is a triple-quoted string. It can span multiple lines and has no special escaping rules.
+    It allows for the parser to be much simpler.
+    """
+
+... # optional document end marker: mandatory if document start marker is present
+
+--- # optional second document
+# Another document can follow
+... # document end marker
+```
+
 A korml file consists of one or more **documents**. A document is composed of nodes of the following
 types. Each node has at most one parent, except the root node of a document. The model forms a
 finite tree. There are no references between nodes, no shared subtrees, and no cycles. Documents are
@@ -94,128 +148,62 @@ identifies the intended korml language version for that document.
     - before a document start marker
     - after a document end marker
 
-    Such whitespace has no effect on document boundaries.
+    Such whitespace has no effect on document boundaries. There can not be any other content between
+    documents besides comments and blank lines.
 
-### Examples
+### Examples of a Single Document
+
+=== "Single Document"
+
+    ```yaml
+    key: value
+    ```
+
+=== "With Markers"
+
+    ```yaml
+    ---
+    key: value
+    ...
+    ```
 
 
-<div class="korml-examples">
-<div class="korml-example">
-<div class="caption">Single document</div>
-```yaml
-key: value
-```
-</div>
 
-<div class="korml-example"> <div class="caption">Version Directive</div>
+=== "With Version Directive"
 
-```yaml
-%!korml 1.0
----
-key: value
-...
-```
-</div> </div>
+    ```yaml
+    %!korml 1.0
+    ---
+    key: value
+    ...
+    ```
 
-<div class="korml-examples">
-<div class="korml-example">
-<div class="caption">Markers</div>
-```yaml
----
-key: value
-...
-```
-</div>
-<div class="korml-example">
-<div class="caption">Two documents</div>
+### Examples of Multiple Documents
 
-```yaml
-%!korml 1.0
----
-a: 1
-...
-%!korml 1.0
----
-b: 2
-...
-```
+=== "Two Documents"
 
-</div>
-</div>
+    ```yaml
+    ---
+    key1: value1
+    ...
+    ---
+    key2: value2
+    ...
+    ```
 
-### Invalid Examples
+=== "With Version Directives"
 
-<div class="korml-examples">
+    ```yaml
+    %!korml 1.0 # All documents use version 1.0
+    ---
+    key1: value1
+    ...
+    #
+    ---
+    key2: value2
+    ...
+    ```
 
-  <div class="korml-example">
-    <div class="caption">Version directive after start marker</div>
-
-```yaml
----
-%!korml 1.0
-key: value
-...
-```
-
-</div>
-
-  <div class="korml-example">
-    <div class="caption">Missing end marker</div>
-
-```yaml
-%!korml 1.0
-key: value
-```
-
-  </div>
-
-</div>
-
-<div class="korml-examples">
-<div class="korml-example">
-<div class="caption">Content after end marker</div>
-
-```yaml
-%!korml 1.0
----
-key: value
-...
-unexpected: data
-```
-
-</div>
-
-<div class="korml-example">
-<div class="caption">Directive inside a document</div>
-
-```yaml
-%!korml 1.0
----
-a: 1
-%!korml 1.0
-...
-```
-</div>
-</div>
-<div class="korml-examples">
-<div class="korml-example">
-<div class="caption">No Start Markers</div>
-```yaml
-%!korml 1.0
-key: first
-...
-second: value
-...
-```
-</div>
-<div class="korml-example">
-<div class="caption">No Start Markers</div>
-```yaml
-%!korml 1.0
-...
-```
-</div>
-</div>
 
 ## Nodes
 
@@ -232,9 +220,10 @@ sequences and mappings:
 - **Block form** — uses indentation (YAML-style)
 - **Flow form** — uses brackets (`[...]`, `{...}`), similar to JSON
 
-This affects only the **syntax**, not the underlying data. No matter how a value is written, it
-still represents one of the three node kinds. We will describe the syntax for each kind of node in
-both block and flow forms in more detail in the following sections.
+The different ways to write sequences and mapping affects only the **syntax**, not the underlying
+data. No matter how a value is written, it still represents one of the three node kinds. We will
+describe the syntax for each kind of node in both block and flow forms in more detail in the
+following sections.
 
 ## Scalars
 
@@ -263,52 +252,54 @@ according to their spelling. If a plain scalar matches the syntax of an integer,
 null literal, it is interpreted as that type; otherwise it becomes a string. Plain scalars cannot
 contain certain characters and cannot span multiple lines.
 
-```yaml
-# ---------------------------
-# Valid plain scalars
-# ---------------------------
+=== "Valid Plain Scalars"
 
-hello          # string (does not match any numeric/boolean/null form)
-true           # boolean
-false          # boolean
-123            # integer
--42            # integer
-3.14           # float
-1e6            # float (scientific notation)
-null           # null
-file_name      # string
-value123       # string (not a number because letters included)
+    ```yaml
+    hello          # string (does not match any numeric/boolean/null form)
+    true           # boolean
+    false          # boolean
+    123            # integer
+    -42            # integer
+    3.14           # float
+    1.0e+6         # float (scientific notation, `e±` with float on one side and int on other)
+    1.0e-6         # float (special support for scientific notation)
+    "1.0e+6"        # string (quoted, so not a number)
+    null           # null
+    file_name      # string
+    value123       # string (not a number because letters included)
+    123abc         # string (not a number because letters included)
+    ```
 
-# ---------------------------
-# Invalid plain scalars
-# ---------------------------
-hello world         # invalid: plain scalars may not contain spaces; use quotes instead
-"hello world"       # valid: quoted scalar
+=== "Invalid Plain Scalars (with Valid Alternatives)"
 
-⌴leading-space      # invalid: plain scalars cannot start with a space
-"⌴leading-space"    # valid: quoted scalar
+    ```yaml
+    hello world         # invalid: plain scalars may not contain spaces; use quotes instead
+    "hello world"       # valid: quoted scalar
 
-trailing-space⌴     # invalid: plain scalars cannot end with a space
-"trailing-space⌴"   # valid: quoted scalar
+    ⌴leading-space      # invalid: plain scalars cannot start with a space
+    "⌴leading-space"    # valid: quoted scalar
 
-a:b                 # invalid: ':' not allowed in plain scalars; must use quotes
-"a:b"               # valid: quoted scalar
+    trailing-space⌴     # invalid: plain scalars cannot end with a space
+    "trailing-space⌴"   # valid: quoted scalar
 
-item#1              # valid, but probably not intended: '#' starts a comment; use quotes
-"item#1"            # valid: quoted scalar
+    a:b                 # invalid: ':' not allowed in plain scalars; must use quotes
+    "a:b"               # valid: quoted scalar
 
-[abc]               # invalid: '[' and ']' are reserved characters
-"[abc]"             # valid: quoted scalar
+    item#1              # valid, but probably not intended: '#' starts a comment; use quotes
+    "item#1"            # valid: quoted scalar
 
-{key}               # invalid: '{' and '}' are reserved characters
-"{key}"             # valid: quoted scalar
+    [abc]               # invalid: '[' and ']' are reserved characters
+    "[abc]"             # valid: quoted scalar
 
-"unbalanced         # invalid: quote must be closed or removed
-'also-bad           # invalid: same reason
+    {key}               # invalid: '{' and '}' are reserved characters
+    "{key}"             # valid: quoted scalar
 
-multi
-line                # invalid: plain scalars cannot span multiple lines
-```
+    "unbalanced         # invalid: quote must be closed or removed
+    'also-bad           # invalid: same reason
+
+    multi
+    line                # invalid: plain scalars cannot span multiple lines
+    ```
 
 ### Quoted scalars
 
@@ -544,11 +535,12 @@ Both forms produce the same sequence node in the document model.
 
 Block sequences use indentation to express structure. Each item begins with a `-` at the sequence’s
 indentation level. A value may follow the `-` on the same line, or the value may appear on the
-following lines as an indented node.
+following lines as an indented node. Block sequences are well suited for multi-line or nested
+structures where readability is more important than compact notation.
 
 Example:
 
-```korml
+```yaml
 items:
   - 10
   - "hello"
@@ -558,20 +550,18 @@ items:
 
 This creates a sequence of four elements: an integer, a string, a sequence, and a mapping.
 
-A list item may also appear with the `-` on its own line:
+!!! note
+    A list item may also appear with the `-` on its own line:
 
-```korml
--
-  - nested
-  - list
-```
+    ```korml
+    -
+      - nested
+      - list
+    ```
+    This form is valid and supported by the grammar, and is useful for deeply nested structures. However,
+    it is rarely needed in typical documents, where placing the value on the same line as `-` is usually
+    clearer.
 
-This form is valid and supported by the grammar, and is useful for deeply nested structures. However,
-it is rarely needed in typical documents, where placing the value on the same line as `-` is usually
-clearer.
-
-Block sequences are well suited for multi-line or nested structures where readability is more
-important than compact notation.
 
 ---
 
@@ -600,8 +590,8 @@ A sequence node:
 * may mix node types freely
 * does not allow empty (blank) items
 
-Once parsed, there is no distinction between block and flow forms: both produce the same node type in
-the document model.
+Once parsed, there is no distinction at the document model level between block and flow forms: both
+produce the same node type in the document model.
 
 
 ## Mapping nodes
@@ -638,7 +628,7 @@ person:
 
 Keys must be valid scalar literals. Quoted keys are supported and interpreted as strings:
 
-```korml
+```yaml
 "strange key": value
 'other key': 10
 ```
@@ -646,7 +636,7 @@ Keys must be valid scalar literals. Quoted keys are supported and interpreted as
 A mapping entry with no value on the same line is allowed, but the value must follow on indented
 lines:
 
-```korml
+```yaml
 config:
   settings:
     feature:
@@ -669,14 +659,14 @@ each entry consists of `key: value`.
 
 Example:
 
-```korml
+```yaml
 config: {name: "Alice", age: 30, active: true}
 ```
 
 Flow mappings may span multiple lines, as long as indentation rules for flow collections are
 followed:
 
-```korml
+```yaml
 config: {
   name: "Alice",
   age: 30,
@@ -698,10 +688,8 @@ A mapping node:
 * allows values of any node type
 * rejects duplicate keys unless an implementation defines a policy
 
-Once parsed, the internal representation is identical regardless of whether the mapping was written
-in block or flow form.
-
-
+Once parsed, the representation in the document model is identical regardless of whether the mapping
+was written in block or flow form.
 
 ## Comments
 
@@ -711,8 +699,10 @@ single, simple comment form inspired by YAML and many line-oriented configuratio
 ### Line Comments
 
 A comment begins with the `#` character and continues until the end of the line. The `#` may appear
-after optional whitespace or after any syntactic element that permits trailing content on the same
-line. The comment itself is not part of the data model and is ignored by the parser.
+after optional whitespace or after any syntactic element. The comment itself is not part of the data
+model and is ignored by the document model. However, for the purpose of round-tripping and
+preserving human readability, comments are retained by parsers and emitters. See the
+
 
 Examples:
 
@@ -767,10 +757,11 @@ text: |
 
 * Comments **end the current line** immediately; no further tokens may appear after a `#` outside a scalar.
 
-Invalid example (trailing content after comment):
+Example (trailing content after comment):
 
 ```yaml
-key: value # comment here another-token (treat as comment)
+# key2: value is just a part of the comment
+key: value # comment here key2: value
 ```
 
 Valid example:
@@ -785,4 +776,4 @@ A line consisting only of whitespace and/or a comment is treated as a **blank li
 not terminate sequences, mappings, or scalars (except block scalars, where blank *content* lines are
 not allowed).
 
-
+## Comparison of Korml and YAML

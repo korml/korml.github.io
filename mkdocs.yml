@@ -12,6 +12,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
+    - content.tabs.link
   palette:
     scheme: kosha
 
