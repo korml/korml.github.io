@@ -48,8 +48,8 @@ InnerSpace         = " " ;
 (* Special characters used in korml syntax *)
 SpecialChar        = ":" | "#" | "{" | "}" | "[" | "]" | "'" | '"' ;
 
-
 NonSpecialChar     = ? any character except HSpace, NEWLINE_CHAR, SpecialChar ? ;
+
 
 (********************************************************************************)
 (* 2. LOW-LEVEL LEXER TOKENS: WHITESPACE, COMMENT, NEWLINE                      *)
@@ -78,7 +78,7 @@ DEDENT             = (* produced when indentation decreases from previous line *
 
 
 (********************************************************************************)
-(* 4. SCALAR TOKENS                                                              *)
+(* 4. SCALAR TOKENS                                                             *)
 (********************************************************************************)
 
 (* 4.1 Plain scalar *)
@@ -148,7 +148,53 @@ DASH_ITEM          = "-" ( HSpace | NEWLINE_CHAR ) ;
 
 
 (********************************************************************************)
-(* 7. PARSER HELPERS (WS, COMMENT, LINEEND, INTER-DOCUMENT WS, EMPTY)           *)
+(* 7. LEXER START SYMBOLS (Only for documentation purposes)                     *)
+(*    (These define the entry points for lexing; ordering/priority is impl.)    *)
+(********************************************************************************)
+
+(* One token (common “start” for tokenization) *)
+Token =
+    (*--- layout / trivia ---------------------------------------------------*)
+      WS
+    | COMMENT
+    | NEWLINE
+
+    (*--- indentation control (generated) -----------------------------------*)
+    | INDENT
+    | DEDENT
+
+    (*--- document structure / directives -----------------------------------*)
+    | VERSION_DIRECTIVE
+    | DOC_START
+    | DOC_END
+
+    (*--- flow punctuation ---------------------------------------------------*)
+    | LBRACE
+    | RBRACE
+    | LBRACKET
+    | RBRACKET
+    | COLON
+    | COMMA
+
+    (*--- block sequence control --------------------------------------------*)
+    | DASH_ITEM
+
+    (*--- scalar forms -------------------------------------------------------*)
+    | TQ_SCALAR
+    | BLOCK_SCALAR
+    | SQ_SCALAR
+    | DQ_SCALAR
+    | PLAIN_SCALAR;
+
+(* Whole file token stream *)
+TokenStream = { Token } EOF ;
+```
+
+## High-Level Grammar
+
+```ebnf
+(********************************************************************************)
+(* 1. PARSER HELPERS (WS, COMMENT, LINEEND, INTER-DOCUMENT WS, EMPTY)           *)
 (********************************************************************************)
 
 empty =
@@ -174,7 +220,7 @@ InterDocumentWSOpt =
 
 
 (********************************************************************************)
-(* 8. TOP-LEVEL DOCUMENT STRUCTURE                                              *)
+(* 2. TOP-LEVEL DOCUMENT STRUCTURE                                              *)
 (********************************************************************************)
 
 DocumentStream =
@@ -190,7 +236,7 @@ Document =
 
 
 (********************************************************************************)
-(* 9. NODES AND BLOCK STRUCTURE                                                 *)
+(* 3. NODES AND BLOCK STRUCTURE                                                 *)
 (********************************************************************************)
 
 Node =
@@ -214,7 +260,7 @@ SequenceItemPlus =
 
 
 (********************************************************************************)
-(* 10. MAPPING ENTRIES                                                          *)
+(* 4. MAPPING ENTRIES                                                          *)
 (********************************************************************************)
 
 MappingEntry =
@@ -237,7 +283,7 @@ Key =
 
 
 (********************************************************************************)
-(* 11. SEQUENCE ITEMS                                                           *)
+(* 5. SEQUENCE ITEMS                                                           *)
 (********************************************************************************)
 
 SequenceItem =
@@ -254,7 +300,7 @@ InlineValue =
 
 
 (********************************************************************************)
-(* 12. SCALAR NODES                                                             *)
+(* 6. SCALAR NODES                                                             *)
 (********************************************************************************)
 
 Scalar =
@@ -266,7 +312,7 @@ Scalar =
 
 
 (********************************************************************************)
-(* 13. FLOW COLLECTIONS                                                         *)
+(* 7. FLOW COLLECTIONS                                                         *)
 (********************************************************************************)
 
 NodeListOpt =
@@ -291,4 +337,6 @@ FlowMapping =
 
 FlowPair =
     Key WSOpt COLON WSOpt Node ;
+
+
 ```
