@@ -18,6 +18,8 @@ theme:
 
 nav:
   - Home: index.md
+  - Syntax: syntax.md
+  - Spec: spec.md
 
 
 plugins:

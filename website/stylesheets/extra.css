@@ -111,35 +111,7 @@ a.autorefs-external:hover::after {
   font-weight: 700;
 }
 
-
-/* Container for side-by-side examples */
-.korml-examples {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 0.6rem;
-  margin: 0.75rem 0;
-}
-
-/* Individual example panel */
-.korml-example {
-  border: 1px solid var(--md-default-fg-color--lighter);
-  border-radius: 4px;
-  padding: 0.4rem 0.6rem;
-  background: var(--md-code-bg-color);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.03);
-}
-
-/* Caption above each code block */
-.korml-example .caption {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--md-default-fg-color);
-  margin-bottom: 0.2rem;
-}
-
-/* Subtle hover */
-.korml-example:hover {
-  border-color: var(--md-accent-fg-color);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+.md-typeset {
+  font-size: 0.7rem;
 }
 

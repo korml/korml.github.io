@@ -3,14 +3,31 @@
 - Copyright (C) 2025 Jayesh Badwaik <j.badwaik@fz-juelich.de>
 -->
 
-# Lexer Specification of Korml Language
+# Specification of Korml Language
 
-## EBNF for Lexical Structure
+!!! note
+    Version       : 1.0 <br>
+    Last Updated  : 2026-01-10
 
-The grammar for the lexical structure of Korml is almost LL(0), except for
+In this document, we define the syntax of the Korml language using an extended Backus-Naur Form
+(EBNF) grammar. The grammar is divided into sections for clarity, covering character classes, lexer
+tokens, and higher-level constructs such as documents, nodes, mappings, and sequences.
 
-1. indentation-based tokens (INDENT, DEDENT) which are produced by the
-   indentation stack logic in the lexer,
+## Terminology
+
+There are different variants of BNF and EBNF used in literature. In this document, we use the
+following conventions:
+
+- `{ ... }` denotes zero or more repetitions of the enclosed element.
+- `? ... ?` denotes a text description which is not part of the grammar.
+- `x*` dnotes one or more repetitions of `x`.
+
+## Lexer Grammar
+
+The grammar for the lexical structure of Korml is almost $LL(0)$, except for
+
+1. indentation-based tokens (INDENT, DEDENT) which are produced by the indentation stack logic in
+   the lexer,
 
 2. the `DASH_ITEM` token which is produced by a state-based rule in the lexer
 
@@ -20,17 +37,19 @@ The grammar for the lexical structure of Korml is almost LL(0), except for
 (* 1. CHARACTER CLASSES (used only inside the lexer, not emitted as tokens)     *)
 (********************************************************************************)
 
-Digit              = "0" | "1" | "2" | "3" | "4" | "5"
-                   | "6" | "7" | "8" | "9" ;
+(* Set of digit characters *)
+Digit              = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
+(* Whitespace and newline characters *)
 HSpace             = " " | "\t" ;
 NEWLINE_CHAR       = "\n" ;
-
-SpecialChar        = ":" | "#" | "{" | "}" | "[" | "]" | "'" | '"' ;
-NonSpecialChar     = ? any character except HSpace, NEWLINE_CHAR, SpecialChar ? ;
-
 InnerSpace         = " " ;
 
+(* Special characters used in korml syntax *)
+SpecialChar        = ":" | "#" | "{" | "}" | "[" | "]" | "'" | '"' ;
+
+
+NonSpecialChar     = ? any character except HSpace, NEWLINE_CHAR, SpecialChar ? ;
 
 (********************************************************************************)
 (* 2. LOW-LEVEL LEXER TOKENS: WHITESPACE, COMMENT, NEWLINE                      *)
@@ -39,6 +58,7 @@ InnerSpace         = " " ;
 WS                 = HSpace { HSpace } ;
 
 CommentText        = { ? any character except NEWLINE_CHAR ? } ;
+
 COMMENT            = "#" [CommentText] ;
 
 NEWLINE            = NEWLINE_CHAR ;
