@@ -13,13 +13,14 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - content.tabs.link
+    - content.code.copy
   palette:
     scheme: kosha
 
 nav:
   - Home: index.md
-  - Syntax: syntax.md
-  - Spec: spec.md
+  - Syntax: syntax/index.md
+  - Spec: spec/index.md
 
 
 plugins:

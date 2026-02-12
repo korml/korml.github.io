@@ -6,21 +6,32 @@
 # Syntax of Korml Language
 
 !!! note
-    Version       : 1.0 <br>
-    Last Updated  : 2026-01-10
+
+    This page always presents the syntax of the **latest released version** of the korml
+    specification. For historical or version-specific syntax, see the [old versions
+    page](/syntax/old/). For now, there are no old versions, as the only released version is 1.0,
+    but the page will be updated in future.
+
+    Current Version: 1.0 <br>
+    Release Date: 2026-02-28
+
+!!! note
+
+    The page describes the syntax of the korml language, as specified in the [Specification
+    document](/spec) in a more expository form. It is intended as a reference for users and implementers
+    to understand how korml documents are structured and how to write them correctly. Due to the nature
+    expository nature of the page, it is not a formal specification, and in case of any discrepancies,
+    the formal grammar in the specification document takes precedence.
 
 
-This section defines the concrete syntax of korml. It specifies how documents are written in textual
-form and how the written structure maps to the node types described in the Document Model. All rules
-in this section are normative unless stated otherwise.
 
-The syntax is line-oriented and indentation-sensitive. Structural relationships are determined by
-indentation, explicit delimiters, and the syntax of mappings, sequences, flow collections, and
-scalars. Whitespace, comments, and line endings follow the rules described in the corresponding
-subsections.
 
-Examples are provided to demonstrate valid forms. They are explanatory and do not replace the formal
-grammar, which appears in the final section of this specification.
+
+The syntax for korml is line-oriented and indentation-sensitive. Structural relationships are
+determined by indentation, explicit delimiters, and the syntax of mappings, sequences, flow
+collections, and scalars. Whitespace, comments, and line endings follow the rules described in the
+corresponding subsections. Examples are provided to demonstrate valid forms and invalid forms. As
+specified above, they are explanatory and do not replace the formal grammar.
 
 ## Overview
 
@@ -30,11 +41,8 @@ YAML](#comparison-of-korml-and-yaml) section for a quick overview of the differe
 
 
 ```yaml
-%!korml version 1.0 # optional line indicating version
---- # optional document start marker, but mandatory for
-    # 1. multi-document files
-    # 2. when version directive is present
-
+%!korml version 1.0 # mandatory version directive
+--- # mandatory document start marker
 # Simple key-value mapping
 key: value
 
@@ -71,7 +79,7 @@ triple_quoted:
     It allows for the parser to be much simpler.
     """
 
-... # optional document end marker: mandatory if document start marker is present
+... # mandatory document end marker
 
 --- # optional second document
 # Another document can follow
@@ -81,7 +89,8 @@ triple_quoted:
 A korml file consists of one or more **documents**. A document is composed of nodes of the following
 types. Each node has at most one parent, except the root node of a document. The model forms a
 finite tree. There are no references between nodes, no shared subtrees, and no cycles. Documents are
-independent of each other in multi-document files.
+independent of each other in multi-document files. There are only three kinds of nodes in the
+document model:
 
 
 - **Scalar Node**
@@ -104,7 +113,40 @@ independent of each other in multi-document files.
   position. Values are nodes. The order of entries is preserved. Duplicate keys are invalid unless
   explicitly permitted by an implementation.
 
-We will now describe the concrete syntax rules that define how documents are written in korml.
+These three kinds are the entire data model of Korml. Korml allows two different ways to *write*
+sequences and mappings:
+
+- **Block form** — uses indentation (YAML-style)
+- **Flow form** — uses brackets (`[...]`, `{...}`) (YAML-style)
+
+The different ways to write sequences and mapping affects only the **syntax**, not the underlying
+data. No matter how a value is written, it still represents one of the three node kinds. We will
+describe the syntax for each kind of node in both block and flow forms in more detail in the
+following sections.
+
+
+## Version Directive
+
+All korml documents, irrespective of which version of the specification they conform to, must begin
+with a version directive of the following form:
+
+```
+%!korml x.y
+```
+
+Here, `x` and `y` are non-negative integers representing the major and minor version numbers of the
+specification, respectively. The version directive must be the very first line of the document, and
+must be followed by a newline character. The version directive is mandatory for all korml documents
+and serves to indicate which version of the specification the document conforms to.
+
+In conformance with semantic versioning, the major version number (x) indicates breaking changes to
+the specification, while the minor version number (y) indicates non-breaking additions. The semantic
+versioning rules imply the following compatibility guarantee:
+
+For a fixed major version x, the set of valid KORML documents defined by specification version x.y
+is a subset of the set defined by version x.z for all z ≥ y. Therefore, a parser that supports
+version x.z can correctly parse documents conforming to version x.y.
+
 
 ## Document Markers
 
@@ -151,25 +193,11 @@ identifies the intended korml language version for that document.
     Such whitespace has no effect on document boundaries. There can not be any other content between
     documents besides comments and blank lines.
 
-### Examples of a Single Document
+### Examples of a Documents
+
+
 
 === "Single Document"
-
-    ```yaml
-    key: value
-    ```
-
-=== "With Markers"
-
-    ```yaml
-    ---
-    key: value
-    ...
-    ```
-
-
-
-=== "With Version Directive"
 
     ```yaml
     %!korml 1.0
@@ -178,52 +206,22 @@ identifies the intended korml language version for that document.
     ...
     ```
 
-### Examples of Multiple Documents
-
 === "Two Documents"
 
-    ```yaml
-    ---
-    key1: value1
-    ...
-    ---
-    key2: value2
-    ...
-    ```
-
-=== "With Version Directives"
 
     ```yaml
     %!korml 1.0 # All documents use version 1.0
     ---
     key1: value1
     ...
-    #
+    # Any comment can go here between documents
+    # Blank lines are also allowed
+
     ---
     key2: value2
     ...
     ```
 
-
-## Nodes
-
-
-A **Node** is any value in a Korml document. Korml has only **three kinds of nodes**:
-
-1. **Scalar** – a single value such as text or a number
-2. **Sequence** – an ordered list of nodes
-3. **Mapping** – a set of key–value pairs, where keys are scalars and values are nodes
-
-These three kinds are the entire data model of Korml. Korml allows two different ways to *write*
-sequences and mappings:
-
-- **Block form** — uses indentation (YAML-style)
-- **Flow form** — uses brackets (`[...]`, `{...}`), similar to JSON
-
-The different ways to write sequences and mapping affects only the **syntax**, not the underlying
-data. No matter how a value is written, it still represents one of the three node kinds. We will
-describe the syntax for each kind of node in both block and flow forms in more detail in the
-following sections.
 
 ## Scalars
 
@@ -258,7 +256,7 @@ contain certain characters and cannot span multiple lines.
     hello          # string (does not match any numeric/boolean/null form)
     true           # boolean
     false          # boolean
-    123            # integer
+    123            # integer (arbitrary length allowed, limited only by implementation)
     -42            # integer
     3.14           # float
     1.0e+6         # float (scientific notation, `e±` with float on one side and int on other)
@@ -301,6 +299,27 @@ contain certain characters and cannot span multiple lines.
     line                # invalid: plain scalars cannot span multiple lines
     ```
 
+#### Scalar Semantics
+
+The type of a plain scalar is determined by its syntax:
+
+- An integer is a sequence of digits, optionally preceded by a `-` for negative numbers. There is no
+  limit on the number of digits. Leading zeros are not allowed unless the number is exactly `0`. The
+  range of integers is unbounded, limited only by implementation constraints.
+
+- A float is a number that includes a decimal point or an exponent. The syntax for floats includes:
+  - A sequence of digits with a decimal point (e.g., `3.14`, `0.001`, `-0.5`)
+  - A number in scientific notation using `e` or `E` (e.g., `1.0e+6`, `2.5E-3`) Floats must have at
+  least one digit before or after the decimal point, and the exponent must be an integer.
+
+- A boolean is either `true` or `false` (case-sensitive).
+
+- A null value is represented by the literal `NULL` (case-sensitive).
+
+- Any plain scalar that does not match the syntax of an integer, float, boolean, or null is interpreted as a
+  string. This includes any scalar containing characters that are not valid in the other types, such
+  as letters, punctuation (other than `-` and `.`), or reserved characters.
+
 ### Quoted scalars
 
 Korml provides three quoted forms for writing string values: **single-quoted**, **double-quoted**, and
@@ -309,7 +328,9 @@ resulting string and avoid the limitations of plain scalars. Regardless of their
 quoted scalar is interpreted as a value of type **String**.
 
 Quoted forms differ in how they represent characters, how they handle escape sequences, and whether
-they permit multiple lines of text.
+they permit multiple lines of text. All quoted forms treat the content as strings, even if the
+content looks like a number or boolean.
+
 
 #### Single-quoted scalars
 
@@ -434,7 +455,7 @@ Block scalars use a single trimming rule:
 This means block scalars are visually aligned with the document but normalized so that the
 indentation of the indicator is *not* part of the resulting text.
 
-Example:
+**Example:**
 
 ```yaml
 note:
@@ -447,7 +468,7 @@ note:
 Here:
 
 * The `|` is indented by 4 spaces, so *I* = 4
-* All content lines must be indented at least 5 spaces (valid)
+* All content lines must be indented at least 5 spaces (which they are)
 * Each line loses exactly 4 leading spaces
 
 Result:

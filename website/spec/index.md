@@ -6,21 +6,28 @@
 # Specification of Korml Language
 
 !!! note
-    Version       : 1.0 <br>
-    Last Updated  : 2026-01-10
+
+    This page always presents the grammar of the **latest released version** of the korml
+    specification. For historical or version-specific grammars, see the [old versions
+    page](/spec/old/). For now, there are no old versions, as the only released version is 1.0, but
+    the page will be updated in future.
+
+    Current Version: 1.0 <br>
+    Release Date: 2026-02-28
+
+
 
 In this document, we define the syntax of the Korml language using an extended Backus-Naur Form
-(EBNF) grammar. The grammar is divided into sections for clarity, covering character classes, lexer
-tokens, and higher-level constructs such as documents, nodes, mappings, and sequences.
-
-## Terminology
-
-There are different variants of BNF and EBNF used in literature. In this document, we use the
-following conventions:
+(EBNF) grammar. There are different variants of BNF and EBNF used in literature. In this document,
+we use the following conventions:
 
 - `{ ... }` denotes zero or more repetitions of the enclosed element.
 - `? ... ?` denotes a text description which is not part of the grammar.
 - `x*` dnotes one or more repetitions of `x`.
+
+The grammar for the Korml language is divided into two main sections, the lexer grammar and the
+high-level parser grammar. The separation allows us to make the round-trip functions either for
+parser or lexer more easily.
 
 ## Lexer Grammar
 
@@ -229,8 +236,8 @@ DocumentStream =
     InterDocumentWSOpt EOF ;
 
 Document =
-    [VERSION_DIRECTIVE]
-    [DOC_START]
+    VERSION_DIRECTIVE
+    DOC_START
     Node
     DOC_END ;
 
